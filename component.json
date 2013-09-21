@@ -1,8 +1,9 @@
 {
-	name: "simplesocket",
-	version: "0.1.0",
-	description: "Add reconnection support to plain WebSocket object.",
-	scripts: [
+	"name": "simplesocket",
+	"repo": "mkuklis/simplesocket",
+	"version": "0.0.1",
+	"description": "Add reconnection support to plain WebSocket object.",
+	"scripts": [
 		"index.js"
 	]
 }
