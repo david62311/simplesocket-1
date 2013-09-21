@@ -16,3 +16,8 @@ var socker = new SimpleSocket(URL, options);
 - reconnectDelay (default 1000ms)
 - closeDelay (default 2000ms)
 - protocols 
+
+
+### License
+
+MIT
