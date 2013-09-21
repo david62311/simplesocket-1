@@ -2,7 +2,12 @@
 	"name": "simplesocket",
 	"repo": "mkuklis/simplesocket",
 	"version": "0.0.1",
+	"keywords": ["websocket", "reconnection"],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
 	"description": "Add reconnection support to plain WebSocket object.",
+	"main": "index.js",
 	"scripts": [
 		"index.js"
 	]
