@@ -6,7 +6,7 @@
     this.url = url;
     this.protocols = options.protocols;
     this.reconnectDelay = options.reconnectDelay || 1000;
-    this.timeoutInterval = options.timeoutInterval || 2000;
+    this.closeInterval = options.timeoutInterval || 2000;
 
     this.readyState = WebSocket.CONNECTING;
     this.forcedClose = false;
@@ -21,14 +21,14 @@
     this.socket = new WebSocket(this.url, this.protocols);
     this.onconnecting && this.onconnecting();
 
-    var timeoutIntervalId = setTimeout(function () {
+    var closeIntervalId = setTimeout(function () {
       self.timedOut = true;
       self.socket.close();
       self.timedOut = false;
-    }, this.timeoutInterval);
+    }, this.closeInterval);
   
     this.socket.onopen = function (event) {
-      clearTimeout(timeoutIntervalId);
+      clearTimeout(closeIntervalId);
 
       self.readyState = WebSocket.OPEN;
       reconnect = false;
@@ -36,7 +36,7 @@
     };
     
     this.socket.onclose = function (event) {
-      clearTimeout(timeoutIntervalId);
+      clearTimeout(closeIntervalId);
       self.socket = null;
 
       if (self.forcedClose) {
