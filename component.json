@@ -1,7 +1,7 @@
 {
 	name: "simplesocket",
 	version: "0.1.0",
-	description: "Add reconnection support for plain WebSocket",
+	description: "Add reconnection support to plain WebSocket object.",
 	scripts: [
 		"index.js"
 	]
