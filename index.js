@@ -6,7 +6,7 @@ function SimpleSocket(url, options) {
   this.url = url;
   this.protocols = options.protocols;
   this.reconnectDelay = options.reconnectDelay || 1000;
-  this.closeInterval = options.timeoutInterval || 2000;
+  this.closeDelay = options.closeDelay || 2000;
 
   this.readyState = WebSocket.CONNECTING;
   this.forcedClose = false;
@@ -25,7 +25,7 @@ SimpleSocket.prototype.connect = function (reconnect) {
     self.timedOut = true;
     self.socket.close();
     self.timedOut = false;
-  }, this.closeInterval);
+  }, this.closeDelay);
 
   this.socket.onopen = function (event) {
     clearTimeout(closeIntervalId);
