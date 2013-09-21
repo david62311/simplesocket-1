@@ -1,6 +1,6 @@
 module.exports = SimpleSocket;
 
-var SimpleSocket = function (url, options) {
+function SimpleSocket(url, options) {
   options || (options = {});
   
   this.url = url;
