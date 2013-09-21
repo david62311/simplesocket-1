@@ -1,4 +1,4 @@
-simplesocket
+SimpleSocket
 ============
 
 Adds reconnection support to plain WebSocket object.
