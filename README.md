@@ -1,11 +1,10 @@
 SimpleSocket
 ============
 
-Adds reconnection support to plain WebSocket object.
+SimpleSocket adds reconnection support to plain WebSocket object. The API is compatible with WebSocket.
 
 
 ### Usage
-
 
 ```js
 var socker = new SimpleSocket(URL, options);
@@ -16,6 +15,8 @@ var socker = new SimpleSocket(URL, options);
 - reconnectDelay (default 1000ms)
 - closeDelay (default 2000ms)
 - protocols 
+
+All events available in WebSocket (`onopen`, `onerror`, `onmessage`) are also available in SimpleSocket. In addition SimpleSocket exposes additional event called `onconnecting`.
 
 
 ### License
