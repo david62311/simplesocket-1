@@ -7,7 +7,7 @@ SimpleSocket adds reconnection support to plain WebSocket object. The API is com
 ### Usage
 
 ```js
-var socker = new SimpleSocket(URL, options);
+var socket = new SimpleSocket(host, protocols, options);
 ```
 
 `options` paramater is optional. Currently supported `options` are:

@@ -1,12 +1,11 @@
 module.exports = SimpleSocket;
 
-function SimpleSocket(url, options) {
-  options || (options = {});
-  
+function SimpleSocket(url, protocols, options) {
+  this.options = options || {};
   this.url = url;
-  this.protocols = options.protocols;
-  this.reconnectDelay = options.reconnectDelay || 1000;
-  this.closeDelay = options.closeDelay || 2000;
+  this.protocols = protocols;
+  this.reconnectDelay = this.options.reconnectDelay || 1000;
+  this.closeDelay = this.options.closeDelay || 2000;
 
   this.readyState = WebSocket.CONNECTING;
   this.forcedClose = false;
@@ -18,7 +17,7 @@ function SimpleSocket(url, options) {
 SimpleSocket.prototype.connect = function (reconnect) {
   var self = this;
 
-  this.socket = new WebSocket(this.url, this.protocols);
+  this.socket = new WebSocket(this.url, this.protocols, this.options);
   this.onconnecting && this.onconnecting();
 
   var closeIntervalId = setTimeout(function () {
