@@ -1,0 +1,18 @@
+{
+	author: "Michal Kuklis",
+	name: "simplesocket",
+	description: "Add reconnection support to plain WebSocket object.",
+	version: "0.0.1",
+	repository: {
+	type: "git",
+	url: "git://github.com/mkuklis/simplesocket.git"
+	},
+	main: "./simplesocket.min.js",
+	ignore: [
+		"build",
+		".gitignore",
+		"Makefile",
+		"index.js",
+		"component.json"
+	]
+}
