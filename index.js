@@ -17,7 +17,10 @@ function SimpleSocket(url, protocols, options) {
 SimpleSocket.prototype.connect = function (reconnect) {
   var self = this;
 
-  this.socket = new WebSocket(this.url, this.protocols, this.options);
+  this.socket = (WebSocket.length == 2) ?
+    new WebSocket(this.url, this.protocols) :
+    new WebSocket(this.url, this.protocols, this.options);
+
   this.onconnecting && this.onconnecting();
 
   var closeIntervalId = setTimeout(function () {
