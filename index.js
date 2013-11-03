@@ -18,9 +18,15 @@ function SimpleSocket(url, protocols, options) {
 SimpleSocket.prototype.connect = function (reconnect) {
   var self = this;
 
-  this.socket = (WebSocket.length == 3) ?
-    new WebSocket(this.url, this.protocols, this.options) :
-    new WebSocket(this.url, this.protocols);
+  if (WebSocket.length == 3) {
+    this.socket = new WebSocket(this.url, this.protocols, this.options);
+  }
+  else if (this.protocols) {
+    this.socket = new WebSocket(this.url, this.protocols);
+  }
+  else {
+    this.socket = new WebSocket(this.url);
+  }
 
   this.onconnecting && this.onconnecting();
 
