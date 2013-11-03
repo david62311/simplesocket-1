@@ -4,8 +4,9 @@ function SimpleSocket(url, protocols, options) {
   this.options = options || {};
   this.url = url;
   this.protocols = protocols;
-  this.reconnectDelay = this.options.reconnectDelay || 1000;
+  this.reconnectDelay = this.options.reconnectDelay || 500;
   this.closeDelay = this.options.closeDelay || 2000;
+  this.currentDelay = this.reconnectDelay;
 
   this.readyState = WebSocket.CONNECTING;
   this.forcedClose = false;
@@ -17,9 +18,9 @@ function SimpleSocket(url, protocols, options) {
 SimpleSocket.prototype.connect = function (reconnect) {
   var self = this;
 
-  this.socket = (WebSocket.length == 2) ?
-    new WebSocket(this.url, this.protocols) :
-    new WebSocket(this.url, this.protocols, this.options);
+  this.socket = (WebSocket.length == 3) ?
+    new WebSocket(this.url, this.protocols, this.options) :
+    new WebSocket(this.url, this.protocols);
 
   this.onconnecting && this.onconnecting();
 
@@ -34,8 +35,10 @@ SimpleSocket.prototype.connect = function (reconnect) {
 
     self.readyState = WebSocket.OPEN;
     reconnect = false;
+    self.currentDelay = self.reconnectDelay;
+
     self.onopen && self.onopen(event);
-  };
+  }
   
   this.socket.onclose = function (event) {
     clearTimeout(closeIntervalId);
@@ -44,6 +47,7 @@ SimpleSocket.prototype.connect = function (reconnect) {
     if (self.forcedClose) {
       self.readyState = WebSocket.CLOSED;
       self.onclose && self.onclose(event);
+      self.currentDelay = self.reconnectDelay;
     } 
     else {
       self.readyState = WebSocket.CONNECTING;
@@ -51,21 +55,24 @@ SimpleSocket.prototype.connect = function (reconnect) {
       
       if (!reconnect && !self.timedOut) {
         self.onclose && self.onclose(event);
+        self.currentDelay = self.reconnectDelay;
       }
 
       setTimeout(function () {
         self.connect(true);
-      }, self.reconnectDelay);
+        self.currentDelay *= 2;
+
+      }, self.currentDelay);
     }
-  };
+  }
 
   this.socket.onmessage = function (event) {
     self.onmessage && self.onmessage(event);
-  };
+  }
 
   this.socket.onerror = function (event) {
     self.onerror && self.onerror(event);
-  };
+  }
 }
 
 SimpleSocket.prototype.send = function (data) {
