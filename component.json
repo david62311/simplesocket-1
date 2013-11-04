@@ -7,8 +7,10 @@
   "development": {},
   "license": "MIT",
 	"description": "Add reconnection support to plain WebSocket object.",
-	"main": "index.js",
+	"main": "lib/index.js",
 	"scripts": [
-		"index.js"
+		"lib/index.js",
+		"lib/offline-events.js",
+		"lib/simplesocket.js"
 	]
 }

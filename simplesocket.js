@@ -200,7 +200,56 @@ require.relative = function(parent) {
 
   return localRequire;
 };
-require.register("simplesocket/index.js", function(exports, require, module){
+require.register("simplesocket/lib/index.js", function(exports, require, module){
+require('./offline-events');
+module.exports = require('./simplesocket');
+});
+require.register("simplesocket/lib/offline-events.js", function(exports, require, module){
+function triggerEvent(type) {
+  var event = document.createEvent('HTMLEvents');
+  event.initEvent(type, true, true);
+  event.eventName = type;
+  (document.body || window).dispatchEvent(event);
+}
+
+function testConnection() {
+  // make sync-ajax request
+  var xhr = new XMLHttpRequest();
+  // phone home
+  xhr.open('HEAD', '/', false); // async=false
+  try {
+    xhr.send();
+    onLine = true;
+  } catch (e) {
+    // throws NETWORK_ERR when disconnected
+    onLine = false;
+  }
+
+  return onLine; 
+}
+
+var onLine = true,
+    lastOnLineStatus = true;
+
+// note: this doesn't allow us to define a getter in Safari
+navigator.__defineGetter__("onLine", testConnection);
+testConnection();
+
+if (onLine === false) {
+  lastOnLineStatus = false;
+  // trigger offline event
+  triggerEvent('offline');
+}
+
+setInterval(function () {
+  testConnection();
+  if (onLine !== lastOnLineStatus) {
+    triggerEvent(onLine ? 'online' : 'offline');
+    lastOnLineStatus = onLine;
+  }
+}, 5000);
+});
+require.register("simplesocket/lib/simplesocket.js", function(exports, require, module){
 module.exports = SimpleSocket;
 
 function SimpleSocket(url, protocols, options) {
@@ -215,6 +264,10 @@ function SimpleSocket(url, protocols, options) {
   this.forcedClose = false;
   this.timedOut = false;
 
+  this.onlineListener = function () {
+    self.refresh();
+  }
+  
   this.connect();
 }
 
@@ -286,6 +339,12 @@ SimpleSocket.prototype.connect = function (reconnect) {
   this.socket.onerror = function (event) {
     self.onerror && self.onerror(event);
   }
+
+  window.removeEventListener('offline', this.onlineListener);
+  window.removeEventListener('online', this.onlineListener);
+
+  window.addEventListener('offline', this.onlineListener);
+  window.addEventListener('online', this.onlineListener);
 }
 
 SimpleSocket.prototype.send = function (data) {
@@ -308,7 +367,7 @@ SimpleSocket.prototype.refresh = function () {
   }
 }
 });
-require.alias("simplesocket/index.js", "simplesocket/index.js");if (typeof exports == "object") {
+require.alias("simplesocket/lib/index.js", "simplesocket/index.js");if (typeof exports == "object") {
   module.exports = require("simplesocket");
 } else if (typeof define == "function" && define.amd) {
   define(function(){ return require("simplesocket"); });
