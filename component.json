@@ -9,8 +9,6 @@
 	"description": "Add reconnection support to plain WebSocket object.",
 	"main": "lib/index.js",
 	"scripts": [
-		"lib/index.js",
-		"lib/offline-events.js",
-		"lib/simplesocket.js"
+		"lib/index.js"
 	]
 }
