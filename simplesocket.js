@@ -209,23 +209,23 @@ function SimpleSocket(url, protocols, options) {
   this.options = options || {};
   this.url = url;
   this.protocols = protocols;
+  this.reset();
+
+  window.addEventListener('online', function () {
+    self.reconnect();
+  }, false);
+  
+  this.connect();
+}
+
+SimpleSocket.prototype.reset = function () {
   this.reconnectDelay = this.options.reconnectDelay || 500;
-  this.closeDelay = this.options.closeDelay || 5000;
+  this.closeDelay = this.options.closeDelay || 10000;
   this.currentDelay = this.reconnectDelay;
 
   this.readyState = WebSocket.CONNECTING;
   this.forcedClose = false;
   this.timedOut = false;
-
-  window.addEventListener('offline', function () {
-    self.close();
-  }, false);
-
-  window.addEventListener('online', function () {
-    self.connect();
-  }, false);
-  
-  this.connect();
 }
 
 SimpleSocket.prototype.connect = function (reconnect) {
@@ -284,7 +284,6 @@ SimpleSocket.prototype.connect = function (reconnect) {
       setTimeout(function () {
         self.connect(true);
         self.currentDelay *= 2;
-
       }, self.currentDelay);
     }
   }
@@ -305,9 +304,15 @@ SimpleSocket.prototype.send = function (data) {
   }
 }
 
+SimpleSocket.prototype.reconnect = function () {
+  if (this.socket) {
+    this.socket.close();
+  }
+}
+
 SimpleSocket.prototype.close = function () {
   this.forcedClose = true;
-  
+
   if (this.socket) {
     this.socket.close();
   }
